@@ -1,0 +1,64 @@
+name: Build and Push Docker Image
+
+on:
+#  push:
+#    branches: [ main ]  # or your default branch
+  workflow_dispatch:
+
+permissions:
+  packages: write
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      timetag: ${{ steps.set-timetag.outputs.timetag }}
+    steps:
+      - name: Set timetag
+        id: set-timetag
+        run: echo "timetag=$(date '+%Y-%m-%dT%H%M%S')" >> $GITHUB_OUTPUT
+
+  build-and-push:
+    runs-on: ubuntu-latest
+    needs: prepare
+    strategy:
+      matrix:
+        service: [apache, php84, php74, php56]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USER }}
+        password: ${{ secrets.DOCKERHUB_PAT }}
+
+    - name: Downcase repo
+      run: echo "REPO=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
+
+    - name: Build and push Docker image - ${{ matrix.service }}
+      uses: docker/build-push-action@v5
+      with:
+        context: ./build/${{ matrix.service }}
+        push: true
+        platforms: linux/amd64,linux/arm64
+        tags: |
+          ghcr.io/${{ env.REPO }}-${{ matrix.service }}:latest
+          ghcr.io/${{ env.REPO }}-${{ matrix.service }}:${{ needs.prepare.outputs.timetag }}
+          ghcr.io/${{ env.REPO }}-${{ matrix.service }}:${{ github.sha }}
+          docker.io/${{ secrets.DOCKERHUB_USER }}/${{ env.REPO }}-${{ matrix.service }}:latest
+          docker.io/${{ secrets.DOCKERHUB_USER }}/${{ env.REPO }}-${{ matrix.service }}:${{ needs.prepare.outputs.timetag }}
+          docker.io/${{ secrets.DOCKERHUB_USER }}/${{ env.REPO }}-${{ matrix.service }}:${{ github.sha }}
