@@ -1,4 +1,4 @@
-This is Docker Image builds for the MultiPHP LAMP stack webserver of Subhash Bose
+This is Docker Image builds for the Multi-PHP LAMP stack webserver of Subhash Bose
 
 Includes:
 -   Apache
