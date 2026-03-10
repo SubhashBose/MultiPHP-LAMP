@@ -1,7 +1,8 @@
-This is Docker Image builds for the Multi-PHP LAMP stack webserver of Subhash Bose
+This is Docker Image builds for the Multi-PHP LAMP stack for [Webserver](https://github.com/SubhashBose/MultiPHP-Webserver/) (private repo)
 
 Includes:
--   Apache
--   PHP 5.6
--   PHP 7.4
--   PHP 8.4
+
+- Apache
+- PHP 5.6
+- PHP 7.4
+- PHP 8.4
