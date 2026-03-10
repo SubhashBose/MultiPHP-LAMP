@@ -55,7 +55,7 @@ jobs:
     - name: Build and push Docker image - ${{ matrix.service }}
       uses: docker/build-push-action@v5
       with:
-        context: ./build/${{ matrix.service }}
+        context: ./${{ matrix.service }}
         push: true
         platforms: linux/amd64,linux/arm64
         tags: |
