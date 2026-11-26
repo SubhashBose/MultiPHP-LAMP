@@ -3,8 +3,7 @@
 # with backported fixes for PHP2Shell (CVE-2026-109618/109619) and the
 # 19 Nov 2026 release (phpAfterShell CVE-2026-126714, CVE-2026-115560, ...).
 # `php -v` still reports 5.6.40 — the digest is what identifies the patched build.
-# Pinned by digest (image built 2026-11-20). To update: re-resolve the tag's digest.
-FROM public.ecr.aws/aikido-dev/php:5.6.40-fpm@sha256:03d12d1c52fbf17d8d62808edd96326f809b4fdb33365861590bf9592c86a740
+FROM public.ecr.aws/aikido-dev/php:5.6.40-fpm
 
 # Debian Stretch is EOL — redirect apt to archive and allow expired/missing keys
 RUN sed -i 's|deb.debian.org/debian|archive.debian.org/debian|g' /etc/apt/sources.list \
